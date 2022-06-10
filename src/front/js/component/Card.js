@@ -10,9 +10,10 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { Context } from "../store/appContext";
 
 const style = {
   position: "absolute",
@@ -26,12 +27,34 @@ const style = {
   p: 4,
 };
 
-export function MediaCard({ image, name }) {
+export function MediaCard({
+  image,
+  name,
+  episodeID,
+  schedule,
+  update,
+  espisodeApiID,
+}) {
   const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState(new Date());
+  const { actions } = React.useContext(Context);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [value, setValue] = React.useState(new Date());
-
+  const handleUpdate = () => {
+    let data = {
+      new_date: value.toISOString(),
+    };
+    actions.changeScheduleEpisode(episodeID, data);
+    handleClose();
+  };
+  const handleCreate = () => {
+    let data = {
+      date: value.toISOString(),
+      api_id: espisodeApiID,
+    };
+    actions.createScheduleEpisode(data);
+    handleClose();
+  };
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -44,6 +67,11 @@ export function MediaCard({ image, name }) {
         <Typography gutterBottom variant="h5" component="div">
           {name}
         </Typography>
+        {schedule && (
+          <Typography gutterBottom variant="h5" component="div">
+            {schedule}
+          </Typography>
+        )}
       </CardContent>
       <CardActions>
         <Button size="small" onClick={handleOpen}>
@@ -72,6 +100,12 @@ export function MediaCard({ image, name }) {
                   }}
                 />
               </LocalizationProvider>
+              <Button
+                size="small"
+                onClick={update ? handleUpdate : handleCreate}
+              >
+                {update ? "Actualizar" : "Crear"}
+              </Button>
             </Box>
           </Fade>
         </Modal>

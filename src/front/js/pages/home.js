@@ -26,18 +26,24 @@ export const Home = () => {
 
   return (
     <>
-      {isReady && store.character ? (
-        store.character.results.map((character) => {
-          return <MediaCard image={character.image} name={character.name} />;
+      {isReady && store.episode ? (
+        store.episode.results.map((episode) => {
+          return (
+            <MediaCard
+              espisodeApiID={episode.id}
+              image={episode.image}
+              name={episode.name}
+            />
+          );
         })
       ) : (
         <CircularProgress />
       )}
-      {store.character && (
+      {store.episode && (
         <Stack spacing={2}>
           <Pagination
             onChange={(e, page) => handlePagination(page)}
-            count={store.character.info.pages}
+            count={store.episode.info.pages}
             color="secondary"
           />
         </Stack>

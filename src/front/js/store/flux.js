@@ -1,5 +1,6 @@
 const getState = ({ getStore, getActions, setStore }) => {
   const API_URL_BASE = "https://rickandmortyapi.com/api";
+  const BACKEND_URL = process.env.BACKEND_URL;
   return {
     store: {
       message: null,
@@ -52,6 +53,61 @@ const getState = ({ getStore, getActions, setStore }) => {
           const response = await fetch(`${API_URL_BASE}/${type}/?page=${page}`);
           let data = await response.json();
           setStore({ [type]: data });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      getEpisodes: async () => {
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/schedule-episode`);
+          let data = await response.json();
+          setStore({ userEpisodes: data });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      getEpisodesApi: async (episodes) => {
+        try {
+          const response = await fetch(`${API_URL_BASE}/episode/${episodes}`);
+          let data = await response.json();
+          setStore({ userEpisodesApi: data });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      changeScheduleEpisode: async (id, data) => {
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/schedule-episode/${id}`,
+            {
+              headers: {
+                // "Authorization": `Bareer ${localStorage.getItem('token')}`,
+                "Content-Type": "application/json",
+              },
+              method: "PUT",
+              body: JSON.stringify(data),
+            }
+          );
+          if (response.ok) {
+            getActions().getEpisodes();
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      createScheduleEpisode: async (data) => {
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/schedule-episode/`, {
+            headers: {
+              // "Authorization": `Bareer ${localStorage.getItem('token')}`,
+              "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(data),
+          });
+          if (response.ok) {
+            getActions().getEpisodes();
+          }
         } catch (error) {
           console.log(error);
         }

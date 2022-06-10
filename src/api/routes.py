@@ -22,8 +22,8 @@ def handle_hello():
     return jsonify(response_body), 200
 
 #Deberia estar autenticado con JWT
-@api.route('/schedule-episode/' , defaults={'id': None} ,methods=['GET','POST','PUT','DELETE'])
-@api.route('/schedule-episode/<int:id>' ,methods=['GET','POST','PUT','DELETE'])
+@api.route('/schedule-episode/' , defaults={'id': None} ,methods=['GET','POST','DELETE'])
+@api.route('/schedule-episode/<int:id>' ,methods=['GET','PUT','DELETE'])
 def handle_schedule_episode(id):
     if request.method == 'POST':
         #Chequear si el episodio existe
